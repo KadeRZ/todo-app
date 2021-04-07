@@ -115,3 +115,36 @@ form {
     font-weight: 500;
     border: 0;
 }
+button {
+    cursor: pointer;
+}
+.task .save-task-button {
+    display: none;
+}
+.task .task-edit-input {
+    display: none;
+}
+.task .task-checkbox {
+    display: inline;
+}
+.task .edit-task-button {
+    display: inline;
+}
+.task .task-label {
+    display: inline;
+}
+.task--edit .save-task-button {
+    display: inline;
+}
+.task--edit .task-edit-input {
+    display: inline;
+}
+.task--edit .task-checkbox {
+    display: none;
+}
+.task--edit .edit-task-button {
+    display: none;
+}
+.task--edit .task-label {
+    display: none;
+}

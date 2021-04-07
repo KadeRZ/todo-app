@@ -33,6 +33,24 @@ tasksContainer.addEventListener('click', e => {
     render()
 
   }
+  if (e.target.tagName.toLowerCase() === 'input') {
+    let taskElement = e.target.parentElement;
+    const selectedList = lists.find(list => list.id === selectedListId)
+    const selectedTask = selectedList.tasks.find(task => task.id === taskElement.dataset.taskId)
+    selectedTask.complete = e.target.checked
+    console.log('task', selectedTask)
+    saveAndRender()
+    renderTaskCount(selectedList)
+  }
+  if (e.target.hasAttribute('data-save-task') === true) {
+    let taskElement = e.target.parentElement;
+    let taskInput = taskElement.querySelector('.task-edit-input')
+    let activeList = lists.find(list => list.id === selectedListId)
+    let activeTask = activeList.tasks.find(task => task.id === taskElement.dataset.taskId)
+    activeTask.name = taskInput.value
+    activeTask.edit = false
+    saveAndRender()
+  }
 })
 
 clearCompleteTasksButton.addEventListener('click', e => {
