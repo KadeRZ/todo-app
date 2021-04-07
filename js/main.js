@@ -19,7 +19,32 @@ let selectedListId = localStorage.getItem(LOCAL_STORAGE_SELECTED_LIST_ID_KEY)
 listsContainer.addEventListener('click', e => {
   if (e.target.tagName.toLowerCase() === 'li') {
     selectedListId = e.target.dataset.listId
+    saveAndRender()
   }
+})
+
+tasksContainer.addEventListener('click', e => {
+  if (e.target.hasAttribute('data-task-edit-button') === true) {
+    let taskElement = e.target.parentElement;
+    let taskInput = taskElement.querySelector('.task-edit-input')
+    let activeList = lists.find(list => list.id === selectedListId)
+    let activeTask = activeList.tasks.find(task => task.id === taskElement.dataset.taskId)
+    activeTask.edit = true
+    render()
+
+  }
+})
+
+clearCompleteTasksButton.addEventListener('click', e => {
+  const selectedList = lists.find(list => list.id === selectedListId)
+  selectedList.tasks = selectedList.tasks.filter(task => !task.complete)
+  saveAndRender()
+})
+
+deleteListButton.addEventListener('click', e => {
+  lists = lists.filter(list => list.id !== selectedListId)
+  selectedListId = null
+  saveAndRender()
 })
 
 newListForm.addEventListener('submit', e => {
@@ -29,7 +54,9 @@ newListForm.addEventListener('submit', e => {
   const list = createList(listName)
   newListInput.value = null
   lists.push(list)
+  saveAndRender()
 })
+
 newTaskForm.addEventListener('submit', e => {
   e.preventDefault()
   const taskName = newTaskInput.value
@@ -38,7 +65,9 @@ newTaskForm.addEventListener('submit', e => {
   newTaskInput.value = null
   const selectedList = lists.find(list => list.id === selectedListId)
   selectedList.tasks.push(task)
+  saveAndRender()
 })
+
 function createList(name) {
   return { id: Date.now().toString(), name: name, tasks: [] }
 }
@@ -46,3 +75,80 @@ function createList(name) {
 function createTask(name) {
   return { id: Date.now().toString(), name: name, complete: false, edit: false }
 }
+function saveAndRender() {
+  save()
+  render()
+}
+
+function save() {
+  localStorage.setItem(LOCAL_STORAGE_LIST_KEY, JSON.stringify(lists))
+  localStorage.setItem(LOCAL_STORAGE_SELECTED_LIST_ID_KEY, selectedListId)
+}
+
+function render() {
+  clearElement(listsContainer)
+  renderLists()
+
+  const selectedList = lists.find(list => list.id === selectedListId)
+  if (selectedListId == null) {
+    listDisplayContainer.style.display = 'none'
+  } else {
+    listDisplayContainer.style.display = ''
+    listTitleElement.innerText = selectedList.name
+    renderTaskCount(selectedList)
+    clearElement(tasksContainer)
+    renderTasks(selectedList)
+  }
+}
+
+function renderTasks(selectedList) {
+  selectedList.tasks.forEach(task => {
+    const documentFragment = document.importNode(taskTemplate.content, true)
+    const taskElement = documentFragment.querySelector('.task')
+    const inputField = taskElement.querySelector('.task-edit-input')
+    taskElement.dataset.taskId = task.id
+    const checkbox = documentFragment.querySelector('input')
+    checkbox.id = task.id
+    checkbox.checked = task.complete
+    const label = documentFragment.querySelector('label')
+    label.htmlFor = task.id
+    label.append(task.name)
+    if (task.edit === true) {
+      inputField.value = task.name
+      taskElement.classList.toggle("task--edit");
+    }
+    tasksContainer.appendChild(taskElement)
+    if (task.edit === true) {
+      inputField.focus()
+      inputField.select()
+    }
+        
+  })
+}
+
+function renderTaskCount(selectedList) {
+  const incompleteTaskCount = selectedList.tasks.filter(task => !task.complete).length
+  const taskString = incompleteTaskCount === 1 ? "task" : "tasks"
+  listCountElement.innerText = `${incompleteTaskCount} ${taskString} remaining`
+}
+
+function renderLists() {
+  lists.forEach(list => {
+    const listElement = document.createElement('li')
+    listElement.dataset.listId = list.id
+    listElement.classList.add("list-name")
+    listElement.innerText = list.name
+    if (list.id === selectedListId) {
+      listElement.classList.add('active-list')
+    }
+    listsContainer.appendChild(listElement)
+  })
+}
+
+function clearElement(element) {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild)
+  }
+}
+
+render()
