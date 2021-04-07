@@ -16,24 +16,24 @@
 
     <div class="all-tasks">
       <h2 class="task-list-title">My lists</h2>
-      <form action="">
-        <input type="text" class="new list">
+      <form action="" data-new-list-form>
+        <input type="text" class="new list" data-new-list-input placeholder="New List">
         <button class="btn create btn btn-primary">Add List</button>
       </form>
-      <ul class="task-list"></ul>
+      <ul class="task-list" data-lists></ul>
 
     </div>
 
-    <div class="todo-list">
+    <div class="todo-list" data-list-display-container>
       <div class="todo-header">
-        <h2 class="list-title">YouTube</h2>
-        <p class="task-count"></p>
+        <h2 class="list-title" data-list-title>TO DO LIST</h2>
+        <p class="task-count" data-list-count></p>
       </div>
 
       <div class="todo-body">
           <div class="new-task-creator">
-              <form action="">
-                  <input type="text" class="new task" placeholder="New Task">
+              <form action="" data-new-task-form>
+                  <input type="text" data-new-task-input class="new task" placeholder="New Task">
                   <button class="btn create btn btn-primary">Add Task</button>
                 </form>
           </div>
@@ -43,8 +43,8 @@
 
 
         <div class="delete-stuff">
-          <button class="btn delete btn btn-dark">Clear completed tasks</button>
-          <button class="btn delete btn btn-danger">Delete list</button>
+          <button class="btn delete btn btn-dark" data-clear-complete-tasks-button>Clear completed tasks</button>
+          <button class="btn delete btn btn-danger" data-delete-list-button>Delete list</button>
         </div>
       </div>
     </div>
@@ -58,8 +58,8 @@
           <span class="custom-checkbox"></span>
         </label>
         <input type="text" class="task-edit-input">
-          <button>save</button>
-          <button class="edit-task-button">edit</button>
+          <button data-save-task class="save-task-button">save</button>
+          <button data-task-edit-button class="edit-task-button">edit</button>
         </div>
     </template>
   </body>
